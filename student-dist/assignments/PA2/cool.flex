@@ -59,7 +59,7 @@ int max_escape_char_err();
 
 WHITESPACE                [ \f\r\t\v]+
 NEWLINE                   \n
-SINGLES		                "+"|"-"|"*"|"/"|"~"|"<"|"="|"("|")"|"{"|"}"|";"|":"|"."|","|"@"
+SINGLES                   "+"|"-"|"*"|"/"|"~"|"<"|"="|"("|")"|"{"|"}"|";"|":"|"."|","|"@"
 
 DASH_COMMENT              --[^\n]*
 START_COMMENT             "(*"
