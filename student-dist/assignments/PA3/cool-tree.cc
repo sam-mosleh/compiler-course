@@ -36,6 +36,17 @@ void class__class::dump(ostream &stream, int n)
    dump_Symbol(stream, n + 2, filename);
 }
 
+Parent parent_class::copy_Parent()
+{
+   return new parent_class(copy_Symbol(type_decl));
+}
+
+void parent_class::dump(ostream &stream, int n)
+{
+   stream << pad(n) << "parent\n";
+   dump_Symbol(stream, n + 2, type_decl);
+}
+
 Feature method_class::copy_Feature()
 {
    return new method_class(copy_Symbol(name), formals->copy_list(), copy_Symbol(return_type), expr->copy_Expression());
@@ -387,6 +398,21 @@ Classes append_Classes(Classes p1, Classes p2)
    return new append_node<Class_>(p1, p2);
 }
 
+Parents nil_Parents()
+{
+   return new nil_node<Parent>();
+}
+
+Parents single_Parents(Parent e)
+{
+   return new single_list_node<Parent>(e);
+}
+
+Parents append_Parents(Parents p1, Parents p2)
+{
+   return new append_node<Parent>(p1, p2);
+}
+
 Features nil_Features()
 {
    return new nil_node<Feature>();
@@ -455,6 +481,11 @@ Program program(Classes classes)
 Class_ class_(Symbol name, Symbol parent, Features features, Symbol filename)
 {
    return new class__class(name, parent, features, filename);
+}
+
+Parent parent(Symbol type_decl)
+{
+   return new parent_class(type_decl);
 }
 
 Feature method(Symbol name, Formals formals, Symbol return_type, Expression expr)
