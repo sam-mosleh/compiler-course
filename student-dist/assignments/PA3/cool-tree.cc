@@ -24,14 +24,14 @@ void program_class::dump(ostream &stream, int n)
 
 Class_ class__class::copy_Class_()
 {
-   return new class__class(copy_Symbol(name), copy_Symbol(parent), features->copy_list(), copy_Symbol(filename));
+   return new class__class(copy_Symbol(name), copy_Symbol(parents), features->copy_list(), copy_Symbol(filename));
 }
 
 void class__class::dump(ostream &stream, int n)
 {
    stream << pad(n) << "class_\n";
    dump_Symbol(stream, n + 2, name);
-   dump_Symbol(stream, n + 2, parent);
+   dump_Symbol(stream, n + 2, parents);
    features->dump(stream, n + 2);
    dump_Symbol(stream, n + 2, filename);
 }

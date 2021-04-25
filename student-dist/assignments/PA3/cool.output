@@ -1,6 +1,17 @@
+Nonterminals useless in grammar
+
+   parent_list
+
+
 Terminals unused in grammar
 
    ERROR
+
+
+Rules useless in grammar
+
+   59 parent_list: TYPEID
+   60            | parent_list ',' TYPEID
 
 
 Grammar
@@ -413,8 +424,8 @@ State 29
    15 formal_list: formal_list . ',' formal
    16            | formal_list . ',' error
 
-    ')'  shift, and go to state 33
-    ','  shift, and go to state 34
+    ','  shift, and go to state 33
+    ')'  shift, and go to state 34
 
 
 State 30
@@ -455,20 +466,20 @@ State 32
 
 State 33
 
-   12 feature: OBJECTID '(' formal_list ')' . ':' TYPEID '{' expression '}'
+   15 formal_list: formal_list ',' . formal
+   16            | formal_list ',' . error
 
-    ':'  shift, and go to state 51
+    error     shift, and go to state 51
+    OBJECTID  shift, and go to state 28
+
+    formal  go to state 52
 
 
 State 34
 
-   15 formal_list: formal_list ',' . formal
-   16            | formal_list ',' . error
+   12 feature: OBJECTID '(' formal_list ')' . ':' TYPEID '{' expression '}'
 
-    error     shift, and go to state 52
-    OBJECTID  shift, and go to state 28
-
-    formal  go to state 53
+    ':'  shift, and go to state 53
 
 
 State 35
@@ -732,23 +743,23 @@ State 50
 
 State 51
 
-   12 feature: OBJECTID '(' formal_list ')' ':' . TYPEID '{' expression '}'
-
-    TYPEID  shift, and go to state 77
-
-
-State 52
-
    16 formal_list: formal_list ',' error .
 
     $default  reduce using rule 16 (formal_list)
 
 
-State 53
+State 52
 
    15 formal_list: formal_list ',' formal .
 
     $default  reduce using rule 15 (formal_list)
+
+
+State 53
+
+   12 feature: OBJECTID '(' formal_list ')' ':' . TYPEID '{' expression '}'
+
+    TYPEID  shift, and go to state 77
 
 
 State 54
@@ -1338,8 +1349,8 @@ State 84
    45 expression_list: expression_list . ',' expression
    46                | expression_list . ',' error
 
-    ')'  shift, and go to state 106
-    ','  shift, and go to state 107
+    ','  shift, and go to state 106
+    ')'  shift, and go to state 107
 
 
 State 85
@@ -1683,13 +1694,6 @@ State 105
 
 State 106
 
-   21 expression: OBJECTID '(' expression_list ')' .
-
-    $default  reduce using rule 21 (expression)
-
-
-State 107
-
    45 expression_list: expression_list ',' . expression
    46                | expression_list ',' . error
 
@@ -1710,6 +1714,13 @@ State 107
     '('         shift, and go to state 48
 
     expression  go to state 123
+
+
+State 107
+
+   21 expression: OBJECTID '(' expression_list ')' .
+
+    $default  reduce using rule 21 (expression)
 
 
 State 108
@@ -1943,8 +1954,8 @@ State 125
    45 expression_list: expression_list . ',' expression
    46                | expression_list . ',' error
 
+    ','  shift, and go to state 106
     ')'  shift, and go to state 135
-    ','  shift, and go to state 107
 
 
 State 126
@@ -2191,8 +2202,8 @@ State 142
    45 expression_list: expression_list . ',' expression
    46                | expression_list . ',' error
 
+    ','  shift, and go to state 106
     ')'  shift, and go to state 148
-    ','  shift, and go to state 107
 
 
 State 143

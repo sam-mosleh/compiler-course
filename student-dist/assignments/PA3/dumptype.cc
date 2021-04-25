@@ -154,7 +154,7 @@ void class__class::dump_with_types(ostream &stream, int n)
    dump_line(stream, n, this);
    stream << pad(n) << "_class\n";
    dump_Symbol(stream, n + 2, name);
-   dump_Symbol(stream, n + 2, parent);
+   dump_Symbol(stream, n + 2, parents);
    stream << pad(n + 2) << "\"";
    print_escaped_string(stream, filename->get_string());
    stream << "\"\n"

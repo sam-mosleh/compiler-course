@@ -133,7 +133,9 @@
     %type <program>     program
     %type <classes>     class_list
     %type <class_>      class
-    
+
+    %type <parents>     parent_list
+
     %type <features>    feature_list
     %type <feature>     feature
 
@@ -188,6 +190,14 @@
         { $$ = class_($2,idtable.add_string("Object"),$4, stringtable.add_string(curr_filename)); }
     | CLASS TYPEID INHERITS TYPEID '{' feature_list '}'
         { $$ = class_($2,$4,$6,stringtable.add_string(curr_filename)); }
+    ;
+
+    /* Parents list may be empty. */
+    parent_list:
+      TYPEID
+        { $$ = single_Parents(parent($1)); }
+    | parent_list ',' TYPEID
+        { $$ = append_Features($1, single_Parents(parent($3))); }
     ;
 
     /* Feature list may be empty, but no empty features in list. */

@@ -40,6 +40,20 @@ public:
 #endif
 };
 
+// define simple phylum - Parent
+typedef class Parent_class *Parent;
+
+class Parent_class : public tree_node
+{
+public:
+   tree_node *copy() { return copy_Parent(); }
+   virtual Parent copy_Parent() = 0;
+
+#ifdef Parent_EXTRAS
+   Parent_EXTRAS
+#endif
+};
+
 // define simple phylum - Feature
 typedef class Feature_class *Feature;
 
@@ -101,6 +115,10 @@ public:
 typedef list_node<Class_> Classes_class;
 typedef Classes_class *Classes;
 
+// define list phlyum - Parent
+typedef list_node<Parent> Parents_class;
+typedef Parents_class *Parents;
+
 // define list phlyum - Features
 typedef list_node<Feature> Features_class;
 typedef Features_class *Features;
@@ -145,7 +163,7 @@ class class__class : public Class__class
 {
 protected:
    Symbol name;
-   Symbol parent;
+   Symbol parents;
    Features features;
    Symbol filename;
 
@@ -153,7 +171,7 @@ public:
    class__class(Symbol a1, Symbol a2, Features a3, Symbol a4)
    {
       name = a1;
-      parent = a2;
+      parents = a2;
       features = a3;
       filename = a4;
    }
@@ -165,6 +183,28 @@ public:
 #endif
 #ifdef class__EXTRAS
        class__EXTRAS
+#endif
+};
+
+// define constructor - parent
+class parent_class : public Parent_class
+{
+protected:
+   Symbol type_decl;
+
+public:
+   parent_class(Symbol a1)
+   {
+      type_decl = a1;
+   }
+   Parent copy_Parent();
+   void dump(ostream &stream, int n);
+
+#ifdef Parent_SHARED_EXTRAS
+   Parent_SHARED_EXTRAS
+#endif
+#ifdef parent_EXTRAS
+       parent_EXTRAS
 #endif
 };
 
@@ -841,6 +881,9 @@ public:
 Classes nil_Classes();
 Classes single_Classes(Class_);
 Classes append_Classes(Classes, Classes);
+Parents nil_Parents();
+Parents single_Parents(Parent);
+Parents append_Parents(Parents, Parents);
 Features nil_Features();
 Features single_Features(Feature);
 Features append_Features(Features, Features);
@@ -855,6 +898,7 @@ Cases single_Cases(Case);
 Cases append_Cases(Cases, Cases);
 Program program(Classes);
 Class_ class_(Symbol, Symbol, Features, Symbol);
+Parent parent(Symbol);
 Feature method(Symbol, Formals, Symbol, Expression);
 Feature attr(Symbol, Symbol, Expression);
 Formal formal(Symbol, Symbol);
