@@ -163,12 +163,12 @@ class class__class : public Class__class
 {
 protected:
    Symbol name;
-   Symbol parents;
+   Parents parents;
    Features features;
    Symbol filename;
 
 public:
-   class__class(Symbol a1, Symbol a2, Features a3, Symbol a4)
+   class__class(Symbol a1, Parents a2, Features a3, Symbol a4)
    {
       name = a1;
       parents = a2;
@@ -897,7 +897,7 @@ Cases nil_Cases();
 Cases single_Cases(Case);
 Cases append_Cases(Cases, Cases);
 Program program(Classes);
-Class_ class_(Symbol, Symbol, Features, Symbol);
+Class_ class_(Symbol, Parents, Features, Symbol);
 Parent parent(Symbol);
 Feature method(Symbol, Formals, Symbol, Expression);
 Feature attr(Symbol, Symbol, Expression);

@@ -154,7 +154,10 @@ void class__class::dump_with_types(ostream &stream, int n)
    dump_line(stream, n, this);
    stream << pad(n) << "_class\n";
    dump_Symbol(stream, n + 2, name);
-   dump_Symbol(stream, n + 2, parents);
+   stream << "\"\n"
+          << pad(n + 2) << "(\n";
+   for (int i = parents->first(); parents->more(i); i = parents->next(i))
+      parents->nth(i)->dump_with_types(stream, n + 2);
    stream << pad(n + 2) << "\"";
    print_escaped_string(stream, filename->get_string());
    stream << "\"\n"
@@ -162,6 +165,16 @@ void class__class::dump_with_types(ostream &stream, int n)
    for (int i = features->first(); features->more(i); i = features->next(i))
       features->nth(i)->dump_with_types(stream, n + 2);
    stream << pad(n + 2) << ")\n";
+}
+
+//
+// parent_class::dump_with_types dumps the name of a parnet.
+//
+void parent_class::dump_with_types(ostream &stream, int n)
+{
+   dump_line(stream, n, this);
+   stream << pad(n) << "_parent\n";
+   dump_Symbol(stream, n + 2, type_decl);
 }
 
 //

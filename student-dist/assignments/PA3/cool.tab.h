@@ -115,6 +115,7 @@ union YYSTYPE
       Program program;
       Class_ class_;
       Classes classes;
+      Parents parents;
       Feature feature;
       Features features;
       Formal formal;
@@ -126,7 +127,7 @@ union YYSTYPE
       char *error_msg;
     
 
-#line 130 "cool.tab.h" /* yacc.c:1909  */
+#line 131 "cool.tab.h" /* yacc.c:1909  */
 };
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1

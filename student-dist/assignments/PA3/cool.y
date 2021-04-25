@@ -92,6 +92,7 @@
       Program program;
       Class_ class_;
       Classes classes;
+      Parents parents;
       Feature feature;
       Features features;
       Formal formal;
@@ -187,8 +188,8 @@
     /* If no parent is specified, the class inherits from the Object class. */
     class :
       CLASS TYPEID '{' feature_list '}'
-        { $$ = class_($2,idtable.add_string("Object"),$4, stringtable.add_string(curr_filename)); }
-    | CLASS TYPEID INHERITS TYPEID '{' feature_list '}'
+        { Parent object = parent(idtable.add_string("Object")); $$ = class_($2,single_Parents(object),$4, stringtable.add_string(curr_filename)); }
+    | CLASS TYPEID INHERITS parent_list '{' feature_list '}'
         { $$ = class_($2,$4,$6,stringtable.add_string(curr_filename)); }
     ;
 
@@ -197,7 +198,7 @@
       TYPEID
         { $$ = single_Parents(parent($1)); }
     | parent_list ',' TYPEID
-        { $$ = append_Features($1, single_Parents(parent($3))); }
+        { $$ = append_Parents($1, single_Parents(parent($3))); }
     ;
 
     /* Feature list may be empty, but no empty features in list. */
