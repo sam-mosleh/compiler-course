@@ -175,6 +175,7 @@ void ClassTable::install_basic_classes()
                    single_Features(method(copy, nil_Formals(), SELF_TYPE, no_expr()))),
                filename);
     class_map[Object] = Object_class;
+    fill_and_check_feature_redefinition(Object_class);
 
     //
     // The IO class inherits from Object. Its methods are
@@ -197,6 +198,7 @@ void ClassTable::install_basic_classes()
                    single_Features(method(in_int, nil_Formals(), Int, no_expr()))),
                filename);
     class_map[IO] = IO_class;
+    fill_and_check_feature_redefinition(IO_class);
 
     //
     // The Int class has no methods and only a single attribute, the
@@ -208,6 +210,7 @@ void ClassTable::install_basic_classes()
                single_Features(attr(val, prim_slot, no_expr())),
                filename);
     class_map[Int] = Int_class;
+    fill_and_check_feature_redefinition(Int_class);
 
     //
     // Bool also has only the "val" slot.
@@ -215,6 +218,7 @@ void ClassTable::install_basic_classes()
     Class_ Bool_class =
         class_(Bool, Object, single_Features(attr(val, prim_slot, no_expr())), filename);
     class_map[Bool] = Bool_class;
+    fill_and_check_feature_redefinition(Bool_class);
 
     //
     // The class Str has a number of slots and operations:
@@ -245,6 +249,7 @@ void ClassTable::install_basic_classes()
                                           no_expr()))),
                filename);
     class_map[Str] = Str_class;
+    fill_and_check_feature_redefinition(Str_class);
 }
 
 bool is_primitive(Symbol class_name)
@@ -429,7 +434,11 @@ Symbol ClassTable::closest_parent(Symbol self_class, Symbol cls_a, Symbol cls_b)
 {
     Symbol target = cls_a;
     if (target == SELF_TYPE)
+    {
+        if (cls_b == SELF_TYPE)
+            return SELF_TYPE;
         target = self_class;
+    }
     while (not_conforming(self_class, cls_b, target))
     {
         target = class_map[target]->get_parent();
@@ -513,15 +522,18 @@ void program_class::check()
 
 void class__class::check()
 {
+    if (semant_debug)
+        classtable->semant_error() << "Class " << name << std::endl;
     Environment env(name);
     env.symbol_table.enterscope();
 
-    env.add_all_attributes_to_symbol_table_from_class(parent);
+    env.add_all_attributes_to_symbol_table_from_class(name);
     env.symbol_table.addid(self, SELF_TYPE);
 
     for (int i = features->first(); features->more(i); i = features->next(i))
     {
-        // cout << "FEATURE " << (features->nth(i)->get_name()) << endl;
+        if (semant_debug)
+            classtable->semant_error() << "Feature " << (features->nth(i)->get_name()) << std::endl;
         features->nth(i)->check(env);
     }
 
@@ -655,14 +667,14 @@ void formal_class::check(Environment &env)
     {
         classtable->semant_error(env.filename, this) << "Formal parameter "
                                                      << name
-                                                     << " is multiply defined."
+                                                     << " is multiply defined"
                                                      << std::endl;
     }
     if (type_decl == SELF_TYPE)
     {
         classtable->semant_error(env.filename, this) << "Formal parameter "
                                                      << name
-                                                     << "cannot have type SELF_TYPE."
+                                                     << "cannot have type SELF_TYPE"
                                                      << std::endl;
     }
     if (classtable->has_no(type_decl))
@@ -671,12 +683,12 @@ void formal_class::check(Environment &env)
                                                      << type_decl
                                                      << " of Formal "
                                                      << name
-                                                     << " is undefined."
+                                                     << " is undefined"
                                                      << std::endl;
     }
     if (name == self)
     {
-        classtable->semant_error(env.filename, this) << "'self' cannot be the name of a formal parameter."
+        classtable->semant_error(env.filename, this) << "'self' cannot be the name of a formal parameter"
                                                      << std::endl;
     }
     env.symbol_table.addid(name, type_decl);
@@ -723,7 +735,7 @@ void static_dispatch_class::check(Environment &env)
     {
         classtable->semant_error(env.filename, this) << "Method "
                                                      << name
-                                                     << " called with wrong number of arguments."
+                                                     << " called with wrong number of arguments"
                                                      << std::endl;
     }
     else
@@ -760,6 +772,15 @@ void dispatch_class::check(Environment &env)
 
     if (expr_type == SELF_TYPE)
         expr_type = env.classname;
+
+    if (classtable->has_no(expr_type))
+    {
+        classtable->semant_error(env.filename, this) << "Dispatch on undefined class "
+                                                     << expr_type
+                                                     << std::endl;
+        type = Object;
+        return;
+    }
 
     method_class *method = classtable->get_method(name, expr_type);
     if (method == NULL)
@@ -932,6 +953,15 @@ void block_class::check(Environment &env)
 
 void let_class::check(Environment &env)
 {
+    if (classtable->has_no(type_decl))
+    {
+        classtable->semant_error(env.filename, this) << "Class "
+                                                     << type_decl
+                                                     << " of let-bound identifier "
+                                                     << identifier
+                                                     << "z is undefined"
+                                                     << std::endl;
+    }
     init->check(env);
     Symbol init_type = init->get_type();
     if (init_type != No_type && classtable->not_conforming(env.classname, init_type, type_decl))
@@ -940,7 +970,7 @@ void let_class::check(Environment &env)
                                                      << init_type
                                                      << " of initialization of "
                                                      << identifier
-                                                     << " does not conform to identifier's declared type"
+                                                     << " does not conform to identifier's declared type "
                                                      << type_decl
                                                      << std::endl;
     }
