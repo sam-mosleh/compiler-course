@@ -22,6 +22,8 @@ void dump_Symbol(ostream &stream, int padding, Symbol b);
 void assert_Symbol(Symbol b);
 Symbol copy_Symbol(Symbol b);
 
+class Environment;
+
 class Program_class;
 typedef Program_class *Program;
 class Class__class;
@@ -92,13 +94,17 @@ typedef Cases_class *Cases;
 		type = s;                                     \
 		return this;                                  \
 	}                                                 \
-	virtual void code(ostream &) = 0;                 \
+	virtual void code(ostream &, Environment &) = 0;  \
 	virtual void dump_with_types(ostream &, int) = 0; \
+	virtual bool is_empty() { return false; };        \
 	void dump_type(ostream &, int);                   \
 	Expression_class() { type = (Symbol)NULL; }
 
-#define Expression_SHARED_EXTRAS \
-	void code(ostream &);        \
+#define Expression_SHARED_EXTRAS         \
+	void code(ostream &, Environment &); \
 	void dump_with_types(ostream &, int);
+
+#define no_expr_EXTRAS \
+	bool is_empty() { return true; }
 
 #endif
